@@ -32,6 +32,12 @@ function ratingRange(min: number, max: number): ValidatorFn {
 export class CustomerComponent implements OnInit  {
     customerForm: FormGroup;
     customer: Customer= new Customer();
+    emailMessage: string;
+
+    private validationMessages = {
+      required:  'Please enter your email address.',
+      pattern: 'Please enter a valid email adddress.'
+    };
 
     constructor(private fb: FormBuilder) {}
 
@@ -48,6 +54,13 @@ export class CustomerComponent implements OnInit  {
             rating: ['', ratingRange(1,5)],
             sendCatalog: true
         });
+
+        this.customerForm.get('notification').valueChanges
+            .subscribe(value => this.setNotification(value));
+
+        const emailControl = this.customerForm.get('emailGroup.email');
+        emailControl.valueChanges.subscribe(value => 
+            this.setMessage(emailControl));
     }
 
     populateTestData(): void {
@@ -61,6 +74,14 @@ export class CustomerComponent implements OnInit  {
     save() {
         console.log(this.customerForm);
         console.log('Saved: ' + JSON.stringify(this.customerForm.value));
+    }
+
+    setMessage(c: AbstractControl): void {
+        this.emailMessage = '';
+        if((c.touched || c.dirty) && c.errors) {
+            this.emailMessage = Object.keys(c.errors).map(key => 
+                this.validationMessages[key]).join(' ');
+        }
     }
 
     setNotification(notifyVia: string): void {

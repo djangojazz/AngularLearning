@@ -57,9 +57,7 @@
                 <div formGroupName="emailGroup"
                     [ngClass]="{'has-error': customerForm.get('emailGroup').errors}">
                     <div class="form-group"
-                        [ngClass]="{'has-error': (customerForm.controls.emailGroup.controls.email.touched || 
-                                                customerForm.get('emailGroup.email').dirty) && 
-                                                !customerForm.get('emailGroup.email').valid }">
+                        [ngClass]="{'has-error': emailMessage }">
                         <label class="col-md-2 control-label" 
                             for="emailId">Email</label>
 
@@ -69,15 +67,8 @@
                                 type="email" 
                                 placeholder="Email (required)" 
                                 formControlName = "email" />
-                            <span class="help-block" *ngIf="(customerForm.get('emailGroup.email').touched || 
-                                                            customerForm.get('emailGroup.email').dirty) && 
-                                                            (customerForm.get('emailGroup.email').errors)">
-                                <span *ngIf="customerForm.get('emailGroup.email').errors.required">
-                                    Please enter your email address.
-                                </span>
-                                <span *ngIf="customerForm.get('emailGroup.email').errors.pattern">
-                                        Please enter a valid email adddress.
-                                </span> 
+                            <span class="help-block" *ngIf="emailMessage">
+                                {{emailMessage }}
                             </span>
                         </div>
                     </div>
@@ -135,14 +126,12 @@
                         <label class="radio-inline">
                             <input type="radio"
                                     value="email"
-                                    formControlName = "notification"
-                                    (click)="setNotification('email')">Email
+                                    formControlName = "notification">Email
                         </label>
                         <label class="radio-inline">
                                 <input type="radio"
                                         value="text"
-                                        formControlName = "notification"
-                                        (click)="setNotification('text')">Text
+                                        formControlName = "notification">Text
                             </label>
                     </div>
                 </div>
