@@ -35,7 +35,7 @@ export class TestService {
       ];
     }
 
-    public loadSlice(size: number, sort: string, order: string, page: number): Observable<TestContainer[]> {
+    public loadSlice(size: number, page: number): Observable<TestContainer[]> {
         var sz = (size == undefined) ? 5 : size;
         var start = (sz * (page));
         var end = start + sz;

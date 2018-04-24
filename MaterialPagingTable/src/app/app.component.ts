@@ -31,13 +31,16 @@ export class AppComponent implements OnInit {
   constructor(private testService: TestService) {}
 
   ngOnInit() {
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.testService.loadSlice(5, 0)
+      .subscribe(() => this.dataSource.data = this.testService.tests);
+
     merge(this.sort.sortChange, this.paginator.page, this.paginator.pageSize)
       .pipe(
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.testService.loadSlice(this.paginator.pageSize,
-             this.sort.active, this.sort.direction, this.paginator.pageIndex);
+          return this.testService.loadSlice(this.paginator.pageSize, this.paginator.pageIndex);
         }),
         map(data => {
           // Flip flag to show that loading has finished.
