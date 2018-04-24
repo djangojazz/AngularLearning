@@ -1,26 +1,21 @@
 <div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade"
+  <!-- <div class="example-loading-shade"
        *ngIf="isLoadingResults || isRateLimitReached">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
     <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
       Error.
     </div>
-  </div>
+  </div> -->
 
   <mat-table #table [dataSource]="dataSource" class="example-table"
              matSort matSortActive="created" 
              matSortDisableClear matSortDirection="asc">
 
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-
-    <!-- Number Column -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
       <mat-cell *matCellDef="let row">{{ row.id }}</mat-cell>
     </ng-container>
 
-    <!-- Title Column -->
     <ng-container matColumnDef="description">
       <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
       <mat-cell *matCellDef="let row">{{ row.description }}</mat-cell>
