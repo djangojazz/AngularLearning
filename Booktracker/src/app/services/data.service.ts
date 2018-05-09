@@ -10,6 +10,12 @@ export class DataService {
 
   constructor(private loggerService: LoggerService) { }
 
+  mostPopularBook: Book = allBooks[0];
+
+  setMostPopularBook(popularBook: Book): void {
+    this.mostPopularBook = popularBook;
+  }
+
   getAllReaders(): Reader[] {
     return allReaders;
   }

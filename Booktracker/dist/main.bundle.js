@@ -287,7 +287,7 @@ var DashboardComponent = /** @class */ (function () {
     DashboardComponent.prototype.ngOnInit = function () {
         this.allBooks = this.dataService.getAllBooks();
         this.allReaders = this.dataService.getAllReaders();
-        this.mostPopularBook = this.allBooks[0];
+        this.mostPopularBook = this.dataService.mostPopularBook;
     };
     DashboardComponent.prototype.deleteBook = function (bookID) {
         console.warn("Delete book not yet implemented (bookID: " + bookID + ").");
@@ -359,17 +359,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
 var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
+var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
 var EditBookComponent = /** @class */ (function () {
-    function EditBookComponent(route, dataservice) {
+    function EditBookComponent(route, dataservice, loggerService) {
         this.route = route;
         this.dataservice = dataservice;
+        this.loggerService = loggerService;
     }
     EditBookComponent.prototype.ngOnInit = function () {
         var bookID = parseInt(this.route.snapshot.params['id']);
         this.selectedBook = this.dataservice.getBookById(bookID);
     };
     EditBookComponent.prototype.setMostPopular = function () {
-        console.warn('Setting most popular book not yet implemented.');
+        this.dataservice.setMostPopularBook(this.selectedBook);
+        this.loggerService.log("New most popular book: " + this.selectedBook.title);
     };
     EditBookComponent.prototype.saveChanges = function () {
         console.warn('Save changes to book not yet implemented.');
@@ -381,7 +384,8 @@ var EditBookComponent = /** @class */ (function () {
             styles: []
         }),
         __metadata("design:paramtypes", [router_1.ActivatedRoute,
-            data_service_1.DataService])
+            data_service_1.DataService,
+            logger_service_1.LoggerService])
     ], EditBookComponent);
     return EditBookComponent;
 }());
@@ -464,7 +468,11 @@ var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts
 var DataService = /** @class */ (function () {
     function DataService(loggerService) {
         this.loggerService = loggerService;
+        this.mostPopularBook = data_1.allBooks[0];
     }
+    DataService.prototype.setMostPopularBook = function (popularBook) {
+        this.mostPopularBook = popularBook;
+    };
     DataService.prototype.getAllReaders = function () {
         return data_1.allReaders;
     };
