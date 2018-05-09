@@ -224,6 +224,7 @@ var dashboard_component_1 = __webpack_require__("./src/app/dashboard/dashboard.c
 var edit_book_component_1 = __webpack_require__("./src/app/edit-book/edit-book.component.ts");
 var edit_reader_component_1 = __webpack_require__("./src/app/edit-reader/edit-reader.component.ts");
 var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
+var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -242,7 +243,7 @@ var AppModule = /** @class */ (function () {
                 app_routing_module_1.AppRoutingModule,
                 forms_1.FormsModule
             ],
-            providers: [logger_service_1.LoggerService],
+            providers: [logger_service_1.LoggerService, data_service_1.DataService],
             bootstrap: [app_component_1.AppComponent]
         })
     ], AppModule);
@@ -276,16 +277,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-var data_1 = __webpack_require__("./src/app/data.ts");
 var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
+var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(loggerService) {
+    function DashboardComponent(loggerService, dataService) {
         this.loggerService = loggerService;
-        this.allBooks = data_1.allBooks;
-        this.allReaders = data_1.allReaders;
-        this.mostPopularBook = data_1.allBooks[0];
+        this.dataService = dataService;
     }
     DashboardComponent.prototype.ngOnInit = function () {
+        this.allBooks = this.dataService.getAllBooks();
+        this.allReaders = this.dataService.getAllReaders();
+        this.mostPopularBook = this.allBooks[0];
     };
     DashboardComponent.prototype.deleteBook = function (bookID) {
         console.warn("Delete book not yet implemented (bookID: " + bookID + ").");
@@ -299,7 +301,8 @@ var DashboardComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/dashboard/dashboard.component.html"),
             styles: []
         }),
-        __metadata("design:paramtypes", [logger_service_1.LoggerService])
+        __metadata("design:paramtypes", [logger_service_1.LoggerService,
+            data_service_1.DataService])
     ], DashboardComponent);
     return DashboardComponent;
 }());
@@ -355,14 +358,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-var data_1 = __webpack_require__("./src/app/data.ts");
+var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
 var EditBookComponent = /** @class */ (function () {
-    function EditBookComponent(route) {
+    function EditBookComponent(route, dataservice) {
         this.route = route;
+        this.dataservice = dataservice;
     }
     EditBookComponent.prototype.ngOnInit = function () {
         var bookID = parseInt(this.route.snapshot.params['id']);
-        this.selectedBook = data_1.allBooks.find(function (book) { return book.bookID === bookID; });
+        this.selectedBook = this.dataservice.getBookById(bookID);
     };
     EditBookComponent.prototype.setMostPopular = function () {
         console.warn('Setting most popular book not yet implemented.');
@@ -376,7 +380,8 @@ var EditBookComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/edit-book/edit-book.component.html"),
             styles: []
         }),
-        __metadata("design:paramtypes", [router_1.ActivatedRoute])
+        __metadata("design:paramtypes", [router_1.ActivatedRoute,
+            data_service_1.DataService])
     ], EditBookComponent);
     return EditBookComponent;
 }());
@@ -409,14 +414,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-var data_1 = __webpack_require__("./src/app/data.ts");
+var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
 var EditReaderComponent = /** @class */ (function () {
-    function EditReaderComponent(route) {
+    function EditReaderComponent(route, dataService) {
         this.route = route;
+        this.dataService = dataService;
     }
     EditReaderComponent.prototype.ngOnInit = function () {
         var readerID = parseInt(this.route.snapshot.params['id']);
-        this.selectedReader = data_1.allReaders.find(function (reader) { return reader.readerID === readerID; });
+        this.selectedReader = this.dataService.getReaderById(readerID);
     };
     EditReaderComponent.prototype.saveChanges = function () {
         console.warn('Save reader not yet implemented.');
@@ -427,11 +433,57 @@ var EditReaderComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/edit-reader/edit-reader.component.html"),
             styles: []
         }),
-        __metadata("design:paramtypes", [router_1.ActivatedRoute])
+        __metadata("design:paramtypes", [router_1.ActivatedRoute,
+            data_service_1.DataService])
     ], EditReaderComponent);
     return EditReaderComponent;
 }());
 exports.EditReaderComponent = EditReaderComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/services/data.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var data_1 = __webpack_require__("./src/app/data.ts");
+var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
+var DataService = /** @class */ (function () {
+    function DataService(loggerService) {
+        this.loggerService = loggerService;
+    }
+    DataService.prototype.getAllReaders = function () {
+        return data_1.allReaders;
+    };
+    DataService.prototype.getReaderById = function (id) {
+        return data_1.allReaders.find(function (reader) { return reader.readerID === id; });
+    };
+    DataService.prototype.getAllBooks = function () {
+        return data_1.allBooks;
+    };
+    DataService.prototype.getBookById = function (id) {
+        return data_1.allBooks.find(function (book) { return book.bookID === id; });
+    };
+    DataService = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [logger_service_1.LoggerService])
+    ], DataService);
+    return DataService;
+}());
+exports.DataService = DataService;
 
 
 /***/ }),

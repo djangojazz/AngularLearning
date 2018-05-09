@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Book } from "app/models/book";
-import { allBooks, allReaders } from 'app/data';
 import { Reader } from "app/models/reader";
-import { LoggerService } from '../services/logger.service';
+import { LoggerService } from 'app/services/logger.service';
+import { DataService } from 'app/services/data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,13 +12,17 @@ import { LoggerService } from '../services/logger.service';
 })
 export class DashboardComponent implements OnInit {
 
-  allBooks: Book[] = allBooks;
-  allReaders: Reader[] = allReaders;
-  mostPopularBook: Book = allBooks[0];
+  allBooks: Book[];
+  allReaders: Reader[];
+  mostPopularBook: Book;
 
-  constructor(private loggerService: LoggerService) { }
+  constructor(private loggerService: LoggerService,
+              private dataService: DataService) { }
 
   ngOnInit() {
+    this.allBooks = this.dataService.getAllBooks();
+    this.allReaders = this.dataService.getAllReaders();
+    this.mostPopularBook = this.allBooks[0];
   }
 
   deleteBook(bookID: number): void {
