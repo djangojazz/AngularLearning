@@ -223,6 +223,7 @@ var app_routing_module_1 = __webpack_require__("./src/app/app-routing.module.ts"
 var dashboard_component_1 = __webpack_require__("./src/app/dashboard/dashboard.component.ts");
 var edit_book_component_1 = __webpack_require__("./src/app/edit-book/edit-book.component.ts");
 var edit_reader_component_1 = __webpack_require__("./src/app/edit-reader/edit-reader.component.ts");
+var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -241,7 +242,7 @@ var AppModule = /** @class */ (function () {
                 app_routing_module_1.AppRoutingModule,
                 forms_1.FormsModule
             ],
-            providers: [],
+            providers: [logger_service_1.LoggerService],
             bootstrap: [app_component_1.AppComponent]
         })
     ], AppModule);
@@ -276,8 +277,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var data_1 = __webpack_require__("./src/app/data.ts");
+var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent() {
+    function DashboardComponent(loggerService) {
+        this.loggerService = loggerService;
         this.allBooks = data_1.allBooks;
         this.allReaders = data_1.allReaders;
         this.mostPopularBook = data_1.allBooks[0];
@@ -296,7 +299,7 @@ var DashboardComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/dashboard/dashboard.component.html"),
             styles: []
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [logger_service_1.LoggerService])
     ], DashboardComponent);
     return DashboardComponent;
 }());
@@ -429,6 +432,39 @@ var EditReaderComponent = /** @class */ (function () {
     return EditReaderComponent;
 }());
 exports.EditReaderComponent = EditReaderComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/services/logger.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var LoggerService = /** @class */ (function () {
+    function LoggerService() {
+    }
+    LoggerService.prototype.log = function (message) {
+        var timeString = new Date().toLocaleTimeString();
+        console.log(message + " (" + timeString + ")");
+    };
+    LoggerService.prototype.error = function (message) {
+        console.error("ERROR: " + message);
+    };
+    LoggerService = __decorate([
+        core_1.Injectable()
+    ], LoggerService);
+    return LoggerService;
+}());
+exports.LoggerService = LoggerService;
 
 
 /***/ }),
