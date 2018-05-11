@@ -223,8 +223,6 @@ var app_routing_module_1 = __webpack_require__("./src/app/app-routing.module.ts"
 var dashboard_component_1 = __webpack_require__("./src/app/dashboard/dashboard.component.ts");
 var edit_book_component_1 = __webpack_require__("./src/app/edit-book/edit-book.component.ts");
 var edit_reader_component_1 = __webpack_require__("./src/app/edit-reader/edit-reader.component.ts");
-var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
-var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -243,7 +241,7 @@ var AppModule = /** @class */ (function () {
                 app_routing_module_1.AppRoutingModule,
                 forms_1.FormsModule
             ],
-            providers: [logger_service_1.LoggerService, data_service_1.DataService],
+            providers: [],
             bootstrap: [app_component_1.AppComponent]
         })
     ], AppModule);
@@ -283,6 +281,7 @@ var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(loggerService, dataService) {
         this.loggerService = loggerService;
         this.dataService = dataService;
+        this.loggerService.log('Creating the dashboard.');
     }
     DashboardComponent.prototype.ngOnInit = function () {
         this.allBooks = this.dataService.getAllBooks();
