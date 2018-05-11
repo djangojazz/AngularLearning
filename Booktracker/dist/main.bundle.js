@@ -223,6 +223,8 @@ var app_routing_module_1 = __webpack_require__("./src/app/app-routing.module.ts"
 var dashboard_component_1 = __webpack_require__("./src/app/dashboard/dashboard.component.ts");
 var edit_book_component_1 = __webpack_require__("./src/app/edit-book/edit-book.component.ts");
 var edit_reader_component_1 = __webpack_require__("./src/app/edit-reader/edit-reader.component.ts");
+var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
+var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -241,7 +243,18 @@ var AppModule = /** @class */ (function () {
                 app_routing_module_1.AppRoutingModule,
                 forms_1.FormsModule
             ],
-            providers: [],
+            providers: [
+                //BELOW ARE MORE COMPLEX EXAMPLES OF USING A 'USE CLASS' FOR SPECIFIC IMPLEMENTATION
+                //  'USE VALUE' FOR SPECIFYING HOW TO DO EACH MEMBER EXPLICITY
+                //  'USE FACTORY' FOR ESTABLISHING A FACTORY PATTERN AND 'DEPS' FOR DEPENDENCY ARRAY OF OBJECTS THAT IMPLEMENT IT.
+                // { provide: LoggerService, useClass: PlainLoggerService }, 
+                // { provide: LoggerService, useValue: {
+                //   log: (message) => console.log(`MESSAGE: ${message}`),
+                //   error: (message) => console.log(`PROBLEM: ${message}`),
+                // } }, 
+                // { provide: DataService, useFactory: dataServiceFactory, deps: [LoggerService]}
+                data_service_1.DataService, logger_service_1.LoggerService
+            ],
             bootstrap: [app_component_1.AppComponent]
         })
     ], AppModule);

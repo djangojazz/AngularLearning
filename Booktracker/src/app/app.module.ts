@@ -38,6 +38,7 @@ import { dataServiceFactory } from './services/data.service.factory';
     //   error: (message) => console.log(`PROBLEM: ${message}`),
     // } }, 
     // { provide: DataService, useFactory: dataServiceFactory, deps: [LoggerService]}
+    DataService, LoggerService
   ],
   bootstrap: [AppComponent]
 })
