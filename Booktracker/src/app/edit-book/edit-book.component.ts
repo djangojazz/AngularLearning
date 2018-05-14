@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Book } from 'app/models/book';
-import { DataService } from '../services/data.service';
-import { LoggerService } from '../services/logger.service';
+import { DataService } from '../core/data.service';
+import { LoggerService } from '../core/logger.service';
 
 @Component({
   selector: 'app-edit-book',

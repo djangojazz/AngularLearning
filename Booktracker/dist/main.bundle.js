@@ -223,8 +223,7 @@ var app_routing_module_1 = __webpack_require__("./src/app/app-routing.module.ts"
 var dashboard_component_1 = __webpack_require__("./src/app/dashboard/dashboard.component.ts");
 var edit_book_component_1 = __webpack_require__("./src/app/edit-book/edit-book.component.ts");
 var edit_reader_component_1 = __webpack_require__("./src/app/edit-reader/edit-reader.component.ts");
-var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
-var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
+var core_module_1 = __webpack_require__("./src/app/core/core.module.ts");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -241,8 +240,52 @@ var AppModule = /** @class */ (function () {
             imports: [
                 platform_browser_1.BrowserModule,
                 app_routing_module_1.AppRoutingModule,
-                forms_1.FormsModule
+                forms_1.FormsModule,
+                core_module_1.CoreModule
             ],
+            bootstrap: [app_component_1.AppComponent]
+        })
+    ], AppModule);
+    return AppModule;
+}());
+exports.AppModule = AppModule;
+
+
+/***/ }),
+
+/***/ "./src/app/core/core.module.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var common_1 = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
+var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
+var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
+var module_import_guard_1 = __webpack_require__("./src/app/core/module-import-guard.ts");
+var CoreModule = /** @class */ (function () {
+    function CoreModule(parentModule) {
+        module_import_guard_1.throwIfAlreadyLoaded(parentModule, 'CoreModule');
+    }
+    CoreModule = __decorate([
+        core_1.NgModule({
+            imports: [
+                common_1.CommonModule
+            ],
+            declarations: [],
             providers: [
                 //BELOW ARE MORE COMPLEX EXAMPLES OF USING A 'USE CLASS' FOR SPECIFIC IMPLEMENTATION
                 //  'USE VALUE' FOR SPECIFYING HOW TO DO EACH MEMBER EXPLICITY
@@ -253,14 +296,114 @@ var AppModule = /** @class */ (function () {
                 //   error: (message) => console.log(`PROBLEM: ${message}`),
                 // } }, 
                 // { provide: DataService, useFactory: dataServiceFactory, deps: [LoggerService]}
-                data_service_1.DataService, logger_service_1.LoggerService
+                logger_service_1.LoggerService,
+                data_service_1.DataService
             ],
-            bootstrap: [app_component_1.AppComponent]
-        })
-    ], AppModule);
-    return AppModule;
+        }),
+        __param(0, core_1.Optional()), __param(0, core_1.SkipSelf()),
+        __metadata("design:paramtypes", [CoreModule])
+    ], CoreModule);
+    return CoreModule;
 }());
-exports.AppModule = AppModule;
+exports.CoreModule = CoreModule;
+
+
+/***/ }),
+
+/***/ "./src/app/core/data.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var data_1 = __webpack_require__("./src/app/data.ts");
+var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
+var DataService = /** @class */ (function () {
+    function DataService(loggerService) {
+        this.loggerService = loggerService;
+        this.mostPopularBook = data_1.allBooks[0];
+    }
+    DataService.prototype.setMostPopularBook = function (popularBook) {
+        this.mostPopularBook = popularBook;
+    };
+    DataService.prototype.getAllReaders = function () {
+        return data_1.allReaders;
+    };
+    DataService.prototype.getReaderById = function (id) {
+        return data_1.allReaders.find(function (reader) { return reader.readerID === id; });
+    };
+    DataService.prototype.getAllBooks = function () {
+        return data_1.allBooks;
+    };
+    DataService.prototype.getBookById = function (id) {
+        return data_1.allBooks.find(function (book) { return book.bookID === id; });
+    };
+    DataService = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [logger_service_1.LoggerService])
+    ], DataService);
+    return DataService;
+}());
+exports.DataService = DataService;
+
+
+/***/ }),
+
+/***/ "./src/app/core/logger.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var LoggerService = /** @class */ (function () {
+    function LoggerService() {
+    }
+    LoggerService.prototype.log = function (message) {
+        var timeString = new Date().toLocaleTimeString();
+        console.log(message + " (" + timeString + ")");
+    };
+    LoggerService.prototype.error = function (message) {
+        console.error("ERROR: " + message);
+    };
+    LoggerService = __decorate([
+        core_1.Injectable()
+    ], LoggerService);
+    return LoggerService;
+}());
+exports.LoggerService = LoggerService;
+
+
+/***/ }),
+
+/***/ "./src/app/core/module-import-guard.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function throwIfAlreadyLoaded(parentModule, moduleName) {
+    if (parentModule) {
+        throw new Error(moduleName + " has already been loaded.  Import Core modules in the AppModule only.");
+    }
+}
+exports.throwIfAlreadyLoaded = throwIfAlreadyLoaded;
 
 
 /***/ }),
@@ -288,8 +431,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
-var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
+var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
+var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
 var DashboardComponent = /** @class */ (function () {
     function DashboardComponent(loggerService, dataService) {
         this.loggerService = loggerService;
@@ -370,8 +513,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
-var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
+var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
+var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
 var EditBookComponent = /** @class */ (function () {
     function EditBookComponent(route, dataservice, loggerService) {
         this.route = route;
@@ -409,7 +552,7 @@ exports.EditBookComponent = EditBookComponent;
 /***/ "./src/app/edit-reader/edit-reader.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-lg-5\">\r\n  <div class=\"well bs-component\">\r\n    <form class=\"form-horizontal\">\r\n      <fieldset>\r\n        <legend>Edit Reader</legend>\r\n        <div class=\"form-group\">\r\n          <label for=\"inputGoal\" class=\"col-lg-3 control-label\">Name</label>\r\n          <div class=\"col-lg-8\">\r\n            <input type=\"text\" class=\"form-control\" id=\"inputGoal\" placeholder=\"Name\" [(ngModel)]=\"selectedReader.name\" name=\"name\">\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label for=\"inputGoal\" class=\"col-lg-3 control-label\">Weekly Goal</label>\r\n          <div class=\"col-lg-8\">\r\n            <input type=\"text\" class=\"form-control\" id=\"inputGoal\" placeholder=\"Weekly Goal\" [(ngModel)]=\"selectedReader.weeklyReadingGoal\" name=\"weeklyReaddingGoal\">\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label for=\"inputTotal\" class=\"col-lg-3 control-label\">Total Read</label>\r\n          <div class=\"col-lg-8\">\r\n            <input type=\"text\" class=\"form-control\" id=\"inputTotal\" placeholder=\"Total Minutes Read\" [(ngModel)]=\"selectedReader.totalMinutesRead\" name=\"totalMinutesRead\">\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-lg-10 col-lg-offset-3\">\r\n            <button type=\"button\" class=\"btn btn-primary\" (click)=\"saveChanges()\">Save</button>\r\n          </div>\r\n        </div>\r\n      </fieldset>\r\n    </form>\r\n  </div>\r\n</div>"
+module.exports = "<div class=\"col-lg-5\">\r\n  <div class=\"well bs-component\">\r\n    <form class=\"form-horizontal\">\r\n      <fieldset>\r\n        <legend>Edit Reader</legend>\r\n        <div class=\"form-group\">\r\n          <label for=\"inputGoal\" class=\"col-lg-3 control-label\">Name</label>\r\n          <div class=\"col-lg-8\">\r\n            <input type=\"text\" class=\"form-control\" id=\"inputGoal\" placeholder=\"Name\" [(ngModel)]=\"selectedReader.name\" name=\"name\">\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label for=\"inputGoal\" class=\"col-lg-3 control-label\">Weekly Goal</label>\r\n          <div class=\"col-lg-8\">\r\n            <input type=\"text\" class=\"form-control\" id=\"inputGoal\" placeholder=\"Weekly Goal\" [(ngModel)]=\"selectedReader.weeklyReadingGoal\" name=\"weeklyReaddingGoal\">\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label for=\"inputTotal\" class=\"col-lg-3 control-label\">Total Read</label>\r\n          <div class=\"col-lg-8\">\r\n            <input type=\"text\" class=\"form-control\" id=\"inputTotal\" placeholder=\"Total Minutes Read\" [(ngModel)]=\"selectedReader.totalMinutesRead\" name=\"totalMinutesRead\">\r\n          </div>\r\n        </div>\r\n\r\n        <div class=\"form-group\">\r\n          <label for=\"inputTotal\" class=\"col-lg-3 control-label\">Current Badge</label>\r\n          <div class=\"col-lg-8\">\r\n              {{ currentBadge}}\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-lg-10 col-lg-offset-3\">\r\n            <button type=\"button\" class=\"btn btn-primary\" (click)=\"saveChanges()\">Save</button>\r\n          </div>\r\n        </div>\r\n      </fieldset>\r\n    </form>\r\n  </div>\r\n</div>"
 
 /***/ }),
 
@@ -430,15 +573,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-var data_service_1 = __webpack_require__("./src/app/services/data.service.ts");
+var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
+var badge_service_1 = __webpack_require__("./src/app/services/badge.service.ts");
 var EditReaderComponent = /** @class */ (function () {
-    function EditReaderComponent(route, dataService) {
+    function EditReaderComponent(route, dataService, badgeService) {
         this.route = route;
         this.dataService = dataService;
+        this.badgeService = badgeService;
     }
     EditReaderComponent.prototype.ngOnInit = function () {
         var readerID = parseInt(this.route.snapshot.params['id']);
         this.selectedReader = this.dataService.getReaderById(readerID);
+        this.currentBadge = this.badgeService.getReaderBadget(this.selectedReader.totalMinutesRead);
     };
     EditReaderComponent.prototype.saveChanges = function () {
         console.warn('Save reader not yet implemented.');
@@ -447,10 +593,12 @@ var EditReaderComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'app-edit-reader',
             template: __webpack_require__("./src/app/edit-reader/edit-reader.component.html"),
-            styles: []
+            styles: [],
+            providers: [badge_service_1.BadgeService]
         }),
         __metadata("design:paramtypes", [router_1.ActivatedRoute,
-            data_service_1.DataService])
+            data_service_1.DataService,
+            badge_service_1.BadgeService])
     ], EditReaderComponent);
     return EditReaderComponent;
 }());
@@ -459,7 +607,7 @@ exports.EditReaderComponent = EditReaderComponent;
 
 /***/ }),
 
-/***/ "./src/app/services/data.service.ts":
+/***/ "./src/app/services/badge.service.ts":
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -475,68 +623,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-var data_1 = __webpack_require__("./src/app/data.ts");
-var logger_service_1 = __webpack_require__("./src/app/services/logger.service.ts");
-var DataService = /** @class */ (function () {
-    function DataService(loggerService) {
-        this.loggerService = loggerService;
-        this.mostPopularBook = data_1.allBooks[0];
+var BadgeService = /** @class */ (function () {
+    function BadgeService() {
     }
-    DataService.prototype.setMostPopularBook = function (popularBook) {
-        this.mostPopularBook = popularBook;
+    BadgeService.prototype.getReaderBadget = function (minutesRead) {
+        if (minutesRead > 5000) {
+            return 'Book Worm';
+        }
+        else if (minutesRead > 2500) {
+            return 'Page Turner';
+        }
+        else {
+            return 'Getting Started';
+        }
     };
-    DataService.prototype.getAllReaders = function () {
-        return data_1.allReaders;
-    };
-    DataService.prototype.getReaderById = function (id) {
-        return data_1.allReaders.find(function (reader) { return reader.readerID === id; });
-    };
-    DataService.prototype.getAllBooks = function () {
-        return data_1.allBooks;
-    };
-    DataService.prototype.getBookById = function (id) {
-        return data_1.allBooks.find(function (book) { return book.bookID === id; });
-    };
-    DataService = __decorate([
+    BadgeService = __decorate([
         core_1.Injectable(),
-        __metadata("design:paramtypes", [logger_service_1.LoggerService])
-    ], DataService);
-    return DataService;
+        __metadata("design:paramtypes", [])
+    ], BadgeService);
+    return BadgeService;
 }());
-exports.DataService = DataService;
-
-
-/***/ }),
-
-/***/ "./src/app/services/logger.service.ts":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-var LoggerService = /** @class */ (function () {
-    function LoggerService() {
-    }
-    LoggerService.prototype.log = function (message) {
-        var timeString = new Date().toLocaleTimeString();
-        console.log(message + " (" + timeString + ")");
-    };
-    LoggerService.prototype.error = function (message) {
-        console.error("ERROR: " + message);
-    };
-    LoggerService = __decorate([
-        core_1.Injectable()
-    ], LoggerService);
-    return LoggerService;
-}());
-exports.LoggerService = LoggerService;
+exports.BadgeService = BadgeService;
 
 
 /***/ }),
