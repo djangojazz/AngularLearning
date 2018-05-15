@@ -216,6 +216,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var platform_browser_1 = __webpack_require__("./node_modules/@angular/platform-browser/esm5/platform-browser.js");
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var add_book_component_1 = __webpack_require__("./src/app/add-book/add-book.component.ts");
 var add_reader_component_1 = __webpack_require__("./src/app/add-reader/add-reader.component.ts");
 var app_component_1 = __webpack_require__("./src/app/app.component.ts");
@@ -241,7 +242,8 @@ var AppModule = /** @class */ (function () {
                 platform_browser_1.BrowserModule,
                 app_routing_module_1.AppRoutingModule,
                 forms_1.FormsModule,
-                core_module_1.CoreModule
+                core_module_1.CoreModule,
+                http_1.HttpClientModule
             ],
             bootstrap: [app_component_1.AppComponent]
         })
@@ -275,6 +277,7 @@ var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var common_1 = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
 var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
 var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
+//import { dataServiceFactory } from './data.service.factory';
 var module_import_guard_1 = __webpack_require__("./src/app/core/module-import-guard.ts");
 var CoreModule = /** @class */ (function () {
     function CoreModule(parentModule) {
@@ -326,18 +329,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+var Rx_1 = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
 var data_1 = __webpack_require__("./src/app/data.ts");
 var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
+var bookTrackerError_1 = __webpack_require__("./src/app/models/bookTrackerError.ts");
 var DataService = /** @class */ (function () {
-    function DataService(loggerService) {
+    function DataService(loggerService, http) {
         this.loggerService = loggerService;
+        this.http = http;
         this.mostPopularBook = data_1.allBooks[0];
     }
     DataService.prototype.setMostPopularBook = function (popularBook) {
         this.mostPopularBook = popularBook;
     };
     DataService.prototype.getAllReaders = function () {
-        return data_1.allReaders;
+        return this.http.get('/api/readers')
+            .catch(this.handleError);
+    };
+    DataService.prototype.handleError = function (error) {
+        var dataError = new bookTrackerError_1.BookTrackerError();
+        dataError.errorNumber = 100;
+        dataError.message = error.statusText;
+        dataError.friendlyMessage = 'An error occurred retrieving data.';
+        return Rx_1.Observable.throw(dataError);
     };
     DataService.prototype.getReaderById = function (id) {
         return data_1.allReaders.find(function (reader) { return reader.readerID === id; });
@@ -350,7 +365,8 @@ var DataService = /** @class */ (function () {
     };
     DataService = __decorate([
         core_1.Injectable(),
-        __metadata("design:paramtypes", [logger_service_1.LoggerService])
+        __metadata("design:paramtypes", [logger_service_1.LoggerService,
+            http_1.HttpClient])
     ], DataService);
     return DataService;
 }());
@@ -440,9 +456,12 @@ var DashboardComponent = /** @class */ (function () {
         this.loggerService.log('Creating the dashboard.');
     }
     DashboardComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.allBooks = this.dataService.getAllBooks();
-        this.allReaders = this.dataService.getAllReaders();
+        this.dataService.getAllReaders()
+            .subscribe(function (data) { return _this.allReaders = data; }, function (err) { return console.log(err.friendlyMessage); }, function () { return _this.loggerService.log('All done getting readers!'); });
         this.mostPopularBook = this.dataService.mostPopularBook;
+        this.loggerService.log('Done with dashboard initialization.');
     };
     DashboardComponent.prototype.deleteBook = function (bookID) {
         console.warn("Delete book not yet implemented (bookID: " + bookID + ").");
@@ -603,6 +622,22 @@ var EditReaderComponent = /** @class */ (function () {
     return EditReaderComponent;
 }());
 exports.EditReaderComponent = EditReaderComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/models/bookTrackerError.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BookTrackerError = /** @class */ (function () {
+    function BookTrackerError() {
+    }
+    return BookTrackerError;
+}());
+exports.BookTrackerError = BookTrackerError;
 
 
 /***/ }),

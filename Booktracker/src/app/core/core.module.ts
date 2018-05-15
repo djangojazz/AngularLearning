@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoggerService } from './logger.service';
 import { DataService } from './data.service';
 import { PlainLoggerService } from './plain-logger.service';
-import { dataServiceFactory } from './data.service.factory';
+//import { dataServiceFactory } from './data.service.factory';
 import { throwIfAlreadyLoaded } from './module-import-guard';
 
 @NgModule({
