@@ -6,6 +6,7 @@ import { Reader } from "app/models/reader";
 import { LoggerService } from '../core/logger.service';
 import { DataService } from '../core/data.service';
 import { BookTrackerError } from '../models/bookTrackerError';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,7 +34,15 @@ export class DashboardComponent implements OnInit {
       );
     this.mostPopularBook = this.dataService.mostPopularBook;
 
+    this.getAuthorRecommendationAsync(1)
+      .catch(err => this.loggerService.error(err));
+
     this.loggerService.log('Done with dashboard initialization.');
+  }
+
+  private async getAuthorRecommendationAsync(readerID: number): Promise<void> {
+      let author: string = await this.dataService.getAuthorRecomendation(readerID);
+      this.loggerService.log(author);
   }
 
   deleteBook(bookID: number): void {

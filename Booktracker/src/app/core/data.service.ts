@@ -17,6 +17,19 @@ export class DataService {
 
   mostPopularBook: Book = allBooks[0];
 
+  getAuthorRecomendation(readerID: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if(readerID > 0 ) {
+          resolve('Dr. Seuss');
+        }
+        else {
+          reject('Invalid reader ID');
+        }
+      }, 2000);
+    });
+  }
+
   setMostPopularBook(popularBook: Book): void {
     this.mostPopularBook = popularBook;
   }
