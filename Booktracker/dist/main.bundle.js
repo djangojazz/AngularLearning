@@ -494,12 +494,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var platform_browser_1 = __webpack_require__("./node_modules/@angular/platform-browser/esm5/platform-browser.js");
 var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
 var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(loggerService, dataService) {
+    function DashboardComponent(loggerService, dataService, title) {
         this.loggerService = loggerService;
         this.dataService = dataService;
+        this.title = title;
         this.loggerService.log('Creating the dashboard.');
     }
     DashboardComponent.prototype.ngOnInit = function () {
@@ -510,6 +512,7 @@ var DashboardComponent = /** @class */ (function () {
         this.mostPopularBook = this.dataService.mostPopularBook;
         this.getAuthorRecommendationAsync(1)
             .catch(function (err) { return _this.loggerService.error(err); });
+        this.title.setTitle("Book Tracker " + platform_browser_1.VERSION.full);
         this.loggerService.log('Done with dashboard initialization.');
     };
     DashboardComponent.prototype.getAuthorRecommendationAsync = function (readerID) {
@@ -539,7 +542,8 @@ var DashboardComponent = /** @class */ (function () {
             styles: []
         }),
         __metadata("design:paramtypes", [logger_service_1.LoggerService,
-            data_service_1.DataService])
+            data_service_1.DataService,
+            platform_browser_1.Title])
     ], DashboardComponent);
     return DashboardComponent;
 }());
