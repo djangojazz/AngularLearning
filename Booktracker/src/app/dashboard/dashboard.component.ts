@@ -42,6 +42,8 @@ export class DashboardComponent implements OnInit {
     this.title.setTitle(`Book Tracker ${VERSION.full}`);
 
     this.loggerService.log('Done with dashboard initialization.');
+
+    //throw new Error('Ugly technical error');
   }
 
   private async getAuthorRecommendationAsync(readerID: number): Promise<void> {
