@@ -414,7 +414,12 @@ var DataService = /** @class */ (function () {
         return this.http.get('/api/books');
     };
     DataService.prototype.getBookById = function (id) {
-        return data_1.allBooks.find(function (book) { return book.bookID === id; });
+        return this.http.get("api/books/" + id, {
+            headers: new http_1.HttpHeaders({
+                'Accept': 'application/json',
+                'Authorization': 'my-token'
+            })
+        });
     };
     DataService = __decorate([
         core_1.Injectable(),
@@ -651,8 +656,10 @@ var EditBookComponent = /** @class */ (function () {
         this.loggerService = loggerService;
     }
     EditBookComponent.prototype.ngOnInit = function () {
+        var _this = this;
         var bookID = parseInt(this.route.snapshot.params['id']);
-        this.selectedBook = this.dataservice.getBookById(bookID);
+        this.dataservice.getBookById(bookID)
+            .subscribe(function (data) { return _this.selectedBook = data; }, function (err) { return console.log(err); });
     };
     EditBookComponent.prototype.setMostPopular = function () {
         this.dataservice.setMostPopularBook(this.selectedBook);
