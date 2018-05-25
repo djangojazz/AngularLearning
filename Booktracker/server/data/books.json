@@ -6,12 +6,6 @@
         "publicationYear": "1953"
     },
     {
-        "bookID": 2,
-        "title": "Green Eggs and Ham",
-        "author": "Dr. Seuss",
-        "publicationYear": "1960"
-    },
-    {
         "bookID": 3,
         "title": "Where the Wild Things Are",
         "author": "Maurice Sendak",
@@ -25,14 +19,8 @@
     },
     {
         "bookID": 5,
-        "title": "Curious George",
-        "author": "H. A. Rey",
-        "publicationYear": "1941"
-    },
-    {
-        "bookID": 6,
-        "title": "Alice's Adventures in Wonderland",
-        "author": "Lewis Carroll",
-        "publicationYear": "1865"
+        "title": "Corduroy",
+        "author": "Don Freeman",
+        "publicationYear": "1968"
     }
 ]

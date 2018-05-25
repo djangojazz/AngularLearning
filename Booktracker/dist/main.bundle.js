@@ -40,15 +40,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var data_service_1 = __webpack_require__("./src/app/core/data.service.ts");
 var AddBookComponent = /** @class */ (function () {
-    function AddBookComponent() {
+    function AddBookComponent(dataService) {
+        this.dataService = dataService;
     }
     AddBookComponent.prototype.ngOnInit = function () { };
     AddBookComponent.prototype.saveBook = function (formValues) {
         var newBook = formValues;
         newBook.bookID = 0;
         console.log(newBook);
-        console.warn('Save new book not yet implemented.');
+        this.dataService.addBook(newBook)
+            .subscribe(function (data) { return console.log(data); }, function (err) { return console.log(err); });
     };
     AddBookComponent = __decorate([
         core_1.Component({
@@ -56,7 +59,7 @@ var AddBookComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/add-book/add-book.component.html"),
             styles: []
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [data_service_1.DataService])
     ], AddBookComponent);
     return AddBookComponent;
 }());
@@ -429,6 +432,23 @@ var DataService = /** @class */ (function () {
             year: b.publicationYear
         }); }), operators_1.tap(function (classicBook) { return console.log(classicBook); }));
     };
+    DataService.prototype.addBook = function (newBook) {
+        return this.http.post('/api/books', newBook, {
+            headers: new http_1.HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        });
+    };
+    DataService.prototype.updateBook = function (updatedBook) {
+        return this.http.put("/api/books/" + updatedBook.bookID, updatedBook, {
+            headers: new http_1.HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        });
+    };
+    DataService.prototype.deleteBook = function (bookID) {
+        return this.http.delete("/api/books/" + bookID);
+    };
     DataService = __decorate([
         core_1.Injectable(),
         __metadata("design:paramtypes", [logger_service_1.LoggerService,
@@ -586,7 +606,12 @@ var DashboardComponent = /** @class */ (function () {
         });
     };
     DashboardComponent.prototype.deleteBook = function (bookID) {
-        console.warn("Delete book not yet implemented (bookID: " + bookID + ").");
+        var _this = this;
+        this.dataService.deleteBook(bookID)
+            .subscribe(function (data) {
+            var index = _this.allBooks.findIndex(function (book) { return book.bookID === bookID; });
+            _this.allBooks.splice(index, 1);
+        }, function (err) { return console.log(err); });
     };
     DashboardComponent.prototype.deleteReader = function (readerID) {
         console.warn("Delete reader not yet implemented (readerID: " + readerID + ").");
@@ -676,7 +701,9 @@ var EditBookComponent = /** @class */ (function () {
         this.loggerService.log("New most popular book: " + this.selectedBook.title);
     };
     EditBookComponent.prototype.saveChanges = function () {
-        console.warn('Save changes to book not yet implemented.');
+        var _this = this;
+        this.dataservice.updateBook(this.selectedBook)
+            .subscribe(function (data) { return console.log(_this.selectedBook.title + " updated succesfully."); }, function (err) { return console.log(err); });
     };
     EditBookComponent = __decorate([
         core_1.Component({
