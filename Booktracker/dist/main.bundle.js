@@ -371,6 +371,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var Rx_1 = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
+var operators_1 = __webpack_require__("./node_modules/rxjs/_esm5/operators.js");
 var data_1 = __webpack_require__("./src/app/data.ts");
 var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
 var bookTrackerError_1 = __webpack_require__("./src/app/models/bookTrackerError.ts");
@@ -420,6 +421,13 @@ var DataService = /** @class */ (function () {
                 'Authorization': 'my-token'
             })
         });
+    };
+    DataService.prototype.getOldBookById = function (id) {
+        return this.http.get("api/books/" + id)
+            .pipe(operators_1.map(function (b) { return ({
+            bookTitle: b.title,
+            year: b.publicationYear
+        }); }), operators_1.tap(function (classicBook) { return console.log(classicBook); }));
     };
     DataService = __decorate([
         core_1.Injectable(),
@@ -660,6 +668,8 @@ var EditBookComponent = /** @class */ (function () {
         var bookID = parseInt(this.route.snapshot.params['id']);
         this.dataservice.getBookById(bookID)
             .subscribe(function (data) { return _this.selectedBook = data; }, function (err) { return console.log(err); });
+        this.dataservice.getOldBookById(bookID)
+            .subscribe(function (data) { return console.log("Old book title: " + data.bookTitle); });
     };
     EditBookComponent.prototype.setMostPopular = function () {
         this.dataservice.setMostPopularBook(this.selectedBook);
