@@ -23,25 +23,31 @@ export class DashboardComponent implements OnInit {
   constructor(private loggerService: LoggerService,
               private dataService: DataService,
             private title: Title) { 
-                this.loggerService.log('Creating the dashboard.');
+                //this.loggerService.log('Creating the dashboard.');
               }
 
   ngOnInit() {
-    this.allBooks = this.dataService.getAllBooks();
+    this.dataService.getAllBooks()
+      .subscribe(
+        (data: Book[]) => this.allBooks = data,
+        (err: any) => console.log(err),
+        () => console.log('Add done getting books')
+      );
+
     this.dataService.getAllReaders()
       .subscribe(
         (data: Reader[]) => this.allReaders = data,
         (err: BookTrackerError) => console.log(err.friendlyMessage),
-        () => this.loggerService.log('All done getting readers!')
+        //() => this.loggerService.log('All done getting readers!')
       );
     this.mostPopularBook = this.dataService.mostPopularBook;
 
-    this.getAuthorRecommendationAsync(1)
-      .catch(err => this.loggerService.error(err));
+    // this.getAuthorRecommendationAsync(1)
+    //   .catch(err => this.loggerService.error(err));
 
     this.title.setTitle(`Book Tracker ${VERSION.full}`);
 
-    this.loggerService.log('Done with dashboard initialization.');
+    //this.loggerService.log('Done with dashboard initialization.');
 
     //throw new Error('Ugly technical error');
   }

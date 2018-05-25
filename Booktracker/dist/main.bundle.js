@@ -410,7 +410,8 @@ var DataService = /** @class */ (function () {
         return data_1.allReaders.find(function (reader) { return reader.readerID === id; });
     };
     DataService.prototype.getAllBooks = function () {
-        return data_1.allBooks;
+        console.log("Getting all books from the dashboard");
+        return this.http.get('/api/books');
     };
     DataService.prototype.getBookById = function (id) {
         return data_1.allBooks.find(function (book) { return book.bookID === id; });
@@ -542,18 +543,19 @@ var DashboardComponent = /** @class */ (function () {
         this.loggerService = loggerService;
         this.dataService = dataService;
         this.title = title;
-        this.loggerService.log('Creating the dashboard.');
+        //this.loggerService.log('Creating the dashboard.');
     }
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.allBooks = this.dataService.getAllBooks();
+        this.dataService.getAllBooks()
+            .subscribe(function (data) { return _this.allBooks = data; }, function (err) { return console.log(err); }, function () { return console.log('Add done getting books'); });
         this.dataService.getAllReaders()
-            .subscribe(function (data) { return _this.allReaders = data; }, function (err) { return console.log(err.friendlyMessage); }, function () { return _this.loggerService.log('All done getting readers!'); });
+            .subscribe(function (data) { return _this.allReaders = data; }, function (err) { return console.log(err.friendlyMessage); });
         this.mostPopularBook = this.dataService.mostPopularBook;
-        this.getAuthorRecommendationAsync(1)
-            .catch(function (err) { return _this.loggerService.error(err); });
+        // this.getAuthorRecommendationAsync(1)
+        //   .catch(err => this.loggerService.error(err));
         this.title.setTitle("Book Tracker " + platform_browser_1.VERSION.full);
-        this.loggerService.log('Done with dashboard initialization.');
+        //this.loggerService.log('Done with dashboard initialization.');
         //throw new Error('Ugly technical error');
     };
     DashboardComponent.prototype.getAuthorRecommendationAsync = function (readerID) {
