@@ -8,6 +8,8 @@ import { LoggerService } from '../core/logger.service';
 import { DataService } from '../core/data.service';
 import { BookTrackerError } from '../models/bookTrackerError';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { resolve } from 'path';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,17 +24,20 @@ export class DashboardComponent implements OnInit {
 
   constructor(private loggerService: LoggerService,
               private dataService: DataService,
-            private title: Title) { 
+              private title: Title,
+              private route: ActivatedRoute) { 
                 //this.loggerService.log('Creating the dashboard.');
               }
 
   ngOnInit() {
-    this.dataService.getAllBooks()
-      .subscribe(
-        (data: Book[]) => this.allBooks = data,
-        (err: BookTrackerError) => console.log(err),
-        () => console.log('Add done getting books')
-      );
+    let resolvedData: Book[] | BookTrackerError = this.route.snapshot.data['resolvedBooks'];
+
+    if(resolvedData instanceof BookTrackerError) {
+      console.log(`Dashboard component error: ${resolvedData.friendlyMessage}`);
+    }
+    else {
+      this.allBooks = resolvedData;
+    }
 
     this.dataService.getAllReaders()
       .subscribe(
