@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
     this.dataService.getAllBooks()
       .subscribe(
         (data: Book[]) => this.allBooks = data,
-        (err: any) => console.log(err),
+        (err: BookTrackerError) => console.log(err),
         () => console.log('Add done getting books')
       );
 

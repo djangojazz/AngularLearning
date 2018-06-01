@@ -375,6 +375,7 @@ var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var Rx_1 = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
 var operators_1 = __webpack_require__("./node_modules/rxjs/_esm5/operators.js");
+var ErrorObservable_1 = __webpack_require__("./node_modules/rxjs/_esm5/observable/ErrorObservable.js");
 var data_1 = __webpack_require__("./src/app/data.ts");
 var logger_service_1 = __webpack_require__("./src/app/core/logger.service.ts");
 var bookTrackerError_1 = __webpack_require__("./src/app/models/bookTrackerError.ts");
@@ -414,8 +415,17 @@ var DataService = /** @class */ (function () {
         return data_1.allReaders.find(function (reader) { return reader.readerID === id; });
     };
     DataService.prototype.getAllBooks = function () {
-        console.log("Getting all books from the dashboard");
-        return this.http.get('/api/books');
+        var _this = this;
+        console.log("Getting all books from the server");
+        return this.http.get('/api/books')
+            .pipe(operators_1.catchError(function (err) { return _this.handleHttpError(err); }));
+    };
+    DataService.prototype.handleHttpError = function (error) {
+        var dataError = new bookTrackerError_1.BookTrackerError();
+        dataError.errorNumber = 100;
+        dataError.message = error.statusText;
+        dataError.friendlyMessage = 'An error occurred retrieving data.';
+        return ErrorObservable_1.ErrorObservable.create(dataError);
     };
     DataService.prototype.getBookById = function (id) {
         return this.http.get("api/books/" + id, {
