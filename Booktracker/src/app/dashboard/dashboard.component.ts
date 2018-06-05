@@ -9,7 +9,6 @@ import { DataService } from '../core/data.service';
 import { BookTrackerError } from '../models/bookTrackerError';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { resolve } from 'path';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +41,7 @@ export class DashboardComponent implements OnInit {
     this.dataService.getAllReaders()
       .subscribe(
         (data: Reader[]) => this.allReaders = data,
-        (err: BookTrackerError) => console.log(err.friendlyMessage),
+        (err: BookTrackerError) => console.log(err.friendlyMessage)
         //() => this.loggerService.log('All done getting readers!')
       );
     this.mostPopularBook = this.dataService.mostPopularBook;
