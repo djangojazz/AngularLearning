@@ -396,6 +396,7 @@ var module_import_guard_1 = __webpack_require__("./src/app/core/module-import-gu
 var book_tracker_error_handler_service_1 = __webpack_require__("./src/app/core/book-tracker-error-handler.service.ts");
 var books_resolver_service_1 = __webpack_require__("./src/app/core/books-resolver.service.ts");
 var add_header_interceptor_1 = __webpack_require__("./src/app/core/add-header.interceptor.ts");
+var log_response_interceptor_1 = __webpack_require__("./src/app/core/log-response.interceptor.ts");
 var CoreModule = /** @class */ (function () {
     function CoreModule(parentModule) {
         module_import_guard_1.throwIfAlreadyLoaded(parentModule, 'CoreModule');
@@ -420,7 +421,8 @@ var CoreModule = /** @class */ (function () {
                 data_service_1.DataService,
                 { provide: core_1.ErrorHandler, useClass: book_tracker_error_handler_service_1.BookTrackerErrorHandlerService },
                 books_resolver_service_1.BooksResolverService,
-                { provide: http_1.HTTP_INTERCEPTORS, useClass: add_header_interceptor_1.AddHeaderIntercepter, multi: true }
+                { provide: http_1.HTTP_INTERCEPTORS, useClass: add_header_interceptor_1.AddHeaderIntercepter, multi: true },
+                { provide: http_1.HTTP_INTERCEPTORS, useClass: log_response_interceptor_1.LogResponseInterceptor, multi: true }
             ],
         }),
         __param(0, core_1.Optional()), __param(0, core_1.SkipSelf()),
@@ -544,6 +546,43 @@ var DataService = /** @class */ (function () {
     return DataService;
 }());
 exports.DataService = DataService;
+
+
+/***/ }),
+
+/***/ "./src/app/core/log-response.interceptor.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+var operators_1 = __webpack_require__("./node_modules/rxjs/_esm5/operators.js");
+var LogResponseInterceptor = /** @class */ (function () {
+    function LogResponseInterceptor() {
+    }
+    LogResponseInterceptor.prototype.intercept = function (req, next) {
+        console.log("LogResponseInterceptor - " + req.url);
+        return next.handle(req)
+            .pipe(operators_1.tap(function (event) {
+            if (event.type === http_1.HttpEventType.Response) {
+                console.log(event.body);
+            }
+        }));
+    };
+    LogResponseInterceptor = __decorate([
+        core_1.Injectable()
+    ], LogResponseInterceptor);
+    return LogResponseInterceptor;
+}());
+exports.LogResponseInterceptor = LogResponseInterceptor;
 
 
 /***/ }),
