@@ -368,6 +368,66 @@ exports.BooksResolverService = BooksResolverService;
 
 /***/ }),
 
+/***/ "./src/app/core/catche.interceptor.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
+var operators_1 = __webpack_require__("./node_modules/rxjs/_esm5/operators.js");
+var of_1 = __webpack_require__("./node_modules/rxjs/_esm5/observable/of.js");
+var http_cache_service_1 = __webpack_require__("./src/app/core/http-cache.service.ts");
+var CacheInterceptor = /** @class */ (function () {
+    function CacheInterceptor(cacheService) {
+        this.cacheService = cacheService;
+    }
+    CacheInterceptor.prototype.intercept = function (req, next) {
+        var _this = this;
+        // pass along non-cacheable requests
+        if (req.method !== 'GET') {
+            console.log("Invalidating cache: " + req.method + " " + req.url);
+            this.cacheService.invalidateCache();
+            return next.handle(req);
+        }
+        //attempt to retrieve a cached response
+        var cachedResponse = this.cacheService.get(req.url);
+        //return cached response
+        if (cachedResponse) {
+            console.log("Returning a cached response: " + cachedResponse.url);
+            console.log(cachedResponse);
+            return of_1.of(cachedResponse);
+        }
+        //send request to server and add response to cache
+        return next.handle(req)
+            .pipe(operators_1.tap(function (event) {
+            if (event instanceof http_1.HttpResponse) {
+                console.log("Adding item to cache: " + req.url);
+                _this.cacheService.put(req.url, event);
+            }
+        }));
+    };
+    CacheInterceptor = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [http_cache_service_1.HttpCacheService])
+    ], CacheInterceptor);
+    return CacheInterceptor;
+}());
+exports.CacheInterceptor = CacheInterceptor;
+
+
+/***/ }),
+
 /***/ "./src/app/core/core.module.ts":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -398,6 +458,7 @@ var books_resolver_service_1 = __webpack_require__("./src/app/core/books-resolve
 var add_header_interceptor_1 = __webpack_require__("./src/app/core/add-header.interceptor.ts");
 var log_response_interceptor_1 = __webpack_require__("./src/app/core/log-response.interceptor.ts");
 var http_cache_service_1 = __webpack_require__("./src/app/core/http-cache.service.ts");
+var catche_interceptor_1 = __webpack_require__("./src/app/core/catche.interceptor.ts");
 var CoreModule = /** @class */ (function () {
     function CoreModule(parentModule) {
         module_import_guard_1.throwIfAlreadyLoaded(parentModule, 'CoreModule');
@@ -422,9 +483,10 @@ var CoreModule = /** @class */ (function () {
                 data_service_1.DataService,
                 { provide: core_1.ErrorHandler, useClass: book_tracker_error_handler_service_1.BookTrackerErrorHandlerService },
                 books_resolver_service_1.BooksResolverService,
-                { provide: http_1.HTTP_INTERCEPTORS, useClass: add_header_interceptor_1.AddHeaderIntercepter, multi: true },
+                http_cache_service_1.HttpCacheService,
                 { provide: http_1.HTTP_INTERCEPTORS, useClass: log_response_interceptor_1.LogResponseInterceptor, multi: true },
-                http_cache_service_1.HttpCacheService
+                { provide: http_1.HTTP_INTERCEPTORS, useClass: add_header_interceptor_1.AddHeaderIntercepter, multi: true },
+                { provide: http_1.HTTP_INTERCEPTORS, useClass: catche_interceptor_1.CacheInterceptor, multi: true },
             ],
         }),
         __param(0, core_1.Optional()), __param(0, core_1.SkipSelf()),
