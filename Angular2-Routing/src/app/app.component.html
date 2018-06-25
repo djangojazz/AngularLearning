@@ -1,0 +1,35 @@
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand">{{pageTitle}}</a>
+            <ul class="nav navbar-nav">
+                <li>
+                    <a [routerLink]="['/welcome']">Home</a>
+                </li>
+                <li>
+                    <a>Product List</a>
+                </li>
+                <li>
+                    <a>Add Product</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li *ngIf="authService.isLoggedIn()">
+                    <a>Welcome {{ authService.currentUser.userName }}</a>
+                </li>
+                <li>
+                    <a>Show Messages</a>
+                </li>
+                <li *ngIf="!authService.isLoggedIn()">
+                    <a>Log In</a>
+                </li>
+                <li *ngIf="authService.isLoggedIn()">
+                    <a (click)="logOut()">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <router-outlet></router-outlet>
+    </div>
+</div>
