@@ -46,7 +46,7 @@
                                  [style.width.px]="imageWidth" 
                                  [style.margin.px]="imageMargin">
                         </td>
-                        <td><a>
+                        <td><a [routerLink]="['/products', product.id]">
                             {{product.productName}}
                             </a>
                         </td>
@@ -58,7 +58,8 @@
                             </ai-star>
                        </td>
                        <td>
-                            <a class="btn btn-primary">
+                            <a class="btn btn-primary"
+                                [routerLink]="['/products', product.id, 'edit']">
                                 Edit
                             </a>
                         </td>

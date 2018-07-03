@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
 
 import { MessageService } from '../messages/message.service';
 
@@ -9,14 +10,20 @@ import { ProductService } from './product.service';
     templateUrl: './app/products/product-edit.component.html',
     styleUrls: ['./app/products/product-edit.component.css']
 })
-export class ProductEditComponent {
+export class ProductEditComponent implements OnInit {
     pageTitle: string = 'Product Edit';
     errorMessage: string;
 
     product: IProduct;
 
     constructor(private productService: ProductService,
-                private messageService: MessageService) { }
+                private messageService: MessageService
+                private route: ActivatedRoute) { }
+
+    ngOnInit(): void {
+            let id = +this.route.snapshot.params['id'];
+            this.getProduct(id);
+        }
 
     getProduct(id: number): void {
         this.productService.getProduct(id)

@@ -55,10 +55,10 @@
     </div>
 
     <div class="panel-footer">
-        <a class="btn btn-default">
+        <a class="btn btn-default" [routerLink]="['/products']">
             <i class="glyphicon glyphicon-chevron-left"></i> Back
         </a>
-        <a class="btn btn-primary" style="width:80px;margin-left:10px">
+        <a class="btn btn-primary" style="width:80px;margin-left:10px" [routerLink]="['/products', product.id, 'edit']">
             Edit
         </a>
     </div>
