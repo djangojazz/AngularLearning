@@ -55,7 +55,8 @@
     </div>
 
     <div class="panel-footer">
-        <a class="btn btn-default" [routerLink]="['/products']">
+        <a class="btn btn-default" [routerLink]="['/products']"
+            [preserveQueryParams]="true">
             <i class="glyphicon glyphicon-chevron-left"></i> Back
         </a>
         <a class="btn btn-primary" style="width:80px;margin-left:10px" [routerLink]="['/products', product.id, 'edit']">
