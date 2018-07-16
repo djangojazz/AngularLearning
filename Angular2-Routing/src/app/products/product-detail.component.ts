@@ -11,16 +11,9 @@ export class ProductDetailComponent implements OnInit {
     product: IProduct;
     errorMessage: string;
 
-    constructor(private productService: ProductService, private route: ActivatedRoute) { }
+    constructor(private route: ActivatedRoute) { }
 
     ngOnInit(): void {
-        let id = +this.route.snapshot.params['id'];
-        this.getProduct(id);
-    }
-
-    getProduct(id: number) {
-        this.productService.getProduct(id).subscribe(
-            product => this.product = product,
-            error => this.errorMessage = <any>error);
+        this.product = this.route.snapshot.data['product'];
     }
 }
