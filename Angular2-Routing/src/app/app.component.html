@@ -19,7 +19,7 @@
                     <a>Welcome {{ authService.currentUser.userName }}</a>
                 </li>
                 <li>
-                    <a>Show Messages</a>
+                    <a [routerLink]="[{outlets: { popup: ['messages']}}]">Show Messages</a>
                 </li>
                 <li *ngIf="!authService.isLoggedIn()">
                     <a [routerLink]="['/login']">Log In</a>
@@ -31,6 +31,14 @@
         </div>
     </nav>
     <div class="container">
-        <router-outlet></router-outlet>
+        <div class="container">
+            <div class="col-md-10">
+                <router-outlet></router-outlet>
+            </div>
+            <div class="col-md-2">
+                <router-outlet name="popup"></router-outlet>
+            </div>
+        </div>
+        
     </div>
 </div>
